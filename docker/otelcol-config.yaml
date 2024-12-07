@@ -1,0 +1,35 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: "0.0.0.0:4317"  # Standard OTLP gRPC port
+      http:
+        endpoint: "0.0.0.0:4318"  # Standard OTLP HTTP port
+
+exporters:
+  debug:
+    verbosity: detailed # Configures the new 'debug' exporter with default settings
+  datadog/exporter:
+    api:
+      site: datadoghq.eu
+      key: xxxxxxxxxxx
+processors:
+  batch:
+    timeout: 5s
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug,datadog/exporter]
+
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug,datadog/exporter]
+
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug,datadog/exporter]
